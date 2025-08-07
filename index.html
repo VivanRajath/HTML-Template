@@ -1,550 +1,338 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fiery Anniversary Celebration</title>
-    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            margin: 0;
-            height: 100vh;
-            background: linear-gradient(#0c0524, #1f1b4e);
-            overflow: hidden;
-            touch-action: manipulation;
-            font-family: 'Russo One', sans-serif;
-        }
+    <title>Birthday Moon Flight</title>
+    <link rel="stylesheet" href="style.css">
 
-        .scene {
-            position: relative;
-            height: 100vh;
-            width: 100%;
-            max-width: 100%;
-            overflow: hidden;
-        }
-
-        .mountain {
-            position: absolute;
-            bottom: 0;
-            width: 0;
-            height: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-bottom: 200px solid #2c3e50;
-        }
-
-        .mountain:nth-child(1) { left: 10%; border-bottom-color: #34495e; }
-        .mountain:nth-child(2) { left: 40%; border-bottom-color: #2c3e50; }
-        .mountain:nth-child(3) { left: 70%; border-bottom-color: #34495e; }
-
-        .ground {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 50px;
-            background: #2c3e50;
-        }
-
-        .human {
-            position: absolute;
-            bottom: 50px;
-            left: 20%;
-            z-index: 3;
-            transform-origin: bottom center;
-        }
-
-        .human img {
-            width: 80px;
-            height: auto;
-            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
-        }
-
-        .rocket {
-            position: absolute;
-            bottom: 50px;
-            left: 60%;
-            width: 20px;
-            height: 50px;
-            z-index: 2;
-        }
-
-        .rocket-body {
-            position: relative;
-            width: 20px;
-            height: 40px;
-            background: #e74c3c;
-            border-radius: 10px 10px 0 0;
-        }
-
-        .rocket-tip {
-            position: absolute;
-            top: -10px;
-            left: 0;
-            width: 0;
-            height: 0;
-            border-left: 10px solid transparent;
-            border-right: 10px solid transparent;
-            border-bottom: 15px solid #e74c3c;
-        }
-
-        .rocket-fin {
-            position: absolute;
-            bottom: 0;
-            width: 8px;
-            height: 10px;
-            background: #c0392b;
-        }
-
-        .rocket-fin-left {
-            left: -8px;
-            border-radius: 0 0 0 5px;
-        }
-
-        .rocket-fin-right {
-            right: -8px;
-            border-radius: 0 0 5px 0;
-        }
-
-        .flame {
-            position: absolute;
-            bottom: -20px;
-            left: 0;
-            width: 20px;
-            height: 0;
-            background: linear-gradient(to top, #f1c40f, #e67e22);
-            border-radius: 0 0 10px 10px;
-            opacity: 0;
-        }
-
-        .fuse {
-            position: absolute;
-            width: 2px;
-            height: 20px;
-            background: #95a5a6;
-            top: 10px;
-            right: -5px;
-            transform-origin: bottom;
-            transform: rotate(-30deg);
-        }
-
-        .fuse-spark {
-            position: absolute;
-            top: -5px;
-            left: -3px;
-            width: 8px;
-            height: 8px;
-            background: #f39c12;
-            border-radius: 50%;
-            box-shadow: 0 0 10px 2px #f39c12;
-            opacity: 0;
-        }
-
-        .match {
-            position: absolute;
-            width: 3px;
-            height: 15px;
-            background: #95a5a6;
-            right: -20px;
-            top: 30px;
-            transform-origin: bottom;
-            opacity: 0;
-        }
-        
-        .match-head {
-            position: absolute;
-            top: -5px;
-            left: -2px;
-            width: 7px;
-            height: 7px;
-            background: #e74c3c;
-            border-radius: 50%;
-        }
-
-        .message-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            text-align: center;
-            perspective: 500px;
-            z-index: 10;
-            opacity: 0;
-        }
-
-        .message-word {
-            display: inline-block;
-            margin: 0 5px;
-            transform: scale(0);
-        }
-
-        .message-letter {
-            display: inline-block;
-            color: #fff;
-            font-size: 1.8rem;
-            font-weight: bold;
-            text-shadow: 0 0 10px #ff4500, 0 0 20px #ff8700, 0 0 30px #ffb700;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        .particle {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            border-radius: 50%;
-            pointer-events: none;
-        }
-
-        .instructions {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #fff;
-            font-size: 1rem;
-            text-align: center;
-            width: 100%;
-            opacity: 0.8;
-            z-index: 20;
-            animation: pulse 1.5s infinite;
-        }
-
-        .stars {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            z-index: 1;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.5); }
-        }
-
-        @keyframes run {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(200px); }
-        }
-
-        @keyframes humanBob {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
-        }
-
-        @keyframes humanRunning {
-            0% { transform: translateX(0) scaleX(1); }
-            25% { transform: translateX(50px) scaleX(1) translateY(-10px); }
-            50% { transform: translateX(100px) scaleX(1) translateY(0); }
-            75% { transform: translateX(150px) scaleX(1) translateY(-10px); }
-            100% { transform: translateX(200px) scaleX(1); }
-        }
-
-        @keyframes humanBackAway {
-            0% { transform: translateX(0) scaleX(1); }
-            50% { transform: translateX(-50px) scaleX(-1); }
-            100% { transform: translateX(-100px) scaleX(-1); }
-        }
-
-        @keyframes lightFuse {
-            0% { opacity: 0; }
-            10% { opacity: 1; }
-            50% { opacity: 1; }
-            90% { opacity: 0.5; }
-            100% { opacity: 0; }
-        }
-
-        @keyframes burn {
-            0% { height: 0; opacity: 0; }
-            10% { height: 20px; opacity: 0.8; }
-            30% { height: 25px; opacity: 1; }
-            60% { height: 20px; opacity: 0.8; }
-            100% { height: 30px; opacity: 1; }
-        }
-
-        @keyframes launch {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(-100vh) rotate(5deg); }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0); }
-        }
-
-        @keyframes fireIn {
-            0% { opacity: 0; transform: scale(0) translateY(50px); }
-            50% { opacity: 1; transform: scale(1.2) translateY(-10px); }
-            100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        @keyframes containerFade {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        @keyframes explode {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 1; }
-            100% { transform: translate(-50%, -50%) scale(15); opacity: 0; }
-        }
-    </style>
 </head>
+
 <body>
-    <div class="scene">
-        <div class="mountain"></div>
-        <div class="mountain"></div>
-        <div class="mountain"></div>
-        <div class="ground"></div>
-        
-        <div class="human">
-            <img src="human.png" alt="Human Figure" id="humanImg">
-            <div class="match">
-                <div class="match-head"></div>
-            </div>
-        </div>
-        
-        <div class="rocket">
-            <div class="rocket-tip"></div>
-            <div class="rocket-body">
-                <div class="rocket-fin rocket-fin-left"></div>
-                <div class="rocket-fin rocket-fin-right"></div>
-                <div class="fuse">
-                    <div class="fuse-spark"></div>
-                </div>
-            </div>
-            <div class="flame"></div>
-        </div>
+    <!-- Stars -->
+    <div class="stars-container"></div>
 
-        <div class="message-container">
-            <!-- Will be filled dynamically -->
-        </div>
-
-        <div class="instructions">Tap to start the celebration </div>
+    <!-- Image Upload Area -->
+    <div class="image-upload-area" id="uploadArea" >
+        <div>📷 Tap to add character image</div>
+        <input type="file" id="imageInput" accept="image/*">
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Note: Replace placeholder with your actual image once uploaded
-            // For demo purposes, we'll use the placeholder, but you should replace this with:
-            // document.getElementById('humanImg').src = 'human.jpg';
-            
-            const scene = document.querySelector('.scene');
-            const human = document.querySelector('.human');
-            const match = document.querySelector('.match');
-            const matchHead = document.querySelector('.match-head');
-            const rocket = document.querySelector('.rocket');
-            const flame = document.querySelector('.flame');
-            const fuse = document.querySelector('.fuse');
-            const fuseSpark = document.querySelector('.fuse-spark');
-            const messageContainer = document.querySelector('.message-container');
-            const instructions = document.querySelector('.instructions');
-            
-            // Create celebration text
-            const celebrationText = "Happy 22 years 7 months anniversary!!";
-            const words = celebrationText.split(' ');
-            
-            words.forEach((word, wordIndex) => {
-                const wordSpan = document.createElement('span');
-                wordSpan.className = 'message-word';
-                
-                for (let i = 0; i < word.length; i++) {
-                    const letterSpan = document.createElement('span');
-                    letterSpan.className = 'message-letter';
-                    letterSpan.textContent = word[i];
-                    wordSpan.appendChild(letterSpan);
-                }
-                
-                messageContainer.appendChild(wordSpan);
-                
-                if (wordIndex < words.length - 1) {
-                    const space = document.createElement('span');
-                    space.className = 'message-word';
-                    space.innerHTML = '&nbsp;';
-                    messageContainer.appendChild(space);
-                }
-            });
-            
-            // Create stars background
-            function createStars() {
-                for (let i = 0; i < 100; i++) {
-                    const star = document.createElement('div');
-                    star.className = 'stars';
-                    star.style.left = `${Math.random() * 100}%`;
-                    star.style.top = `${Math.random() * 100}%`;
-                    star.style.opacity = Math.random() * 0.8 + 0.2;
-                    star.style.animation = `twinkle ${Math.random() * 3 + 2}s infinite`;
-                    scene.appendChild(star);
-                }
-            }
-            
-            createStars();
-            
-            // Create particles for explosion
-            function createExplosionParticles(x, y) {
-                const colors = ['#ff4500', '#ff6a00', '#ff8700', '#ffb700', '#ffd300', '#fff200'];
-                
-                for (let i = 0; i < 100; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.background = colors[Math.floor(Math.random() * colors.length)];
-                    
-                    // Random size
-                    const size = Math.random() * 6 + 2;
-                    particle.style.width = `${size}px`;
-                    particle.style.height = `${size}px`;
-                    
-                    // Starting position
-                    particle.style.left = `${x}px`;
-                    particle.style.top = `${y}px`;
-                    
-                    // Random trajectory
-                    const angle = Math.random() * Math.PI * 2;
-                    const distance = Math.random() * 200 + 50;
-                    const duration = Math.random() * 1 + 0.5;
-                    
-                    // Apply animation
-                    particle.style.transition = `transform ${duration}s ease-out, opacity ${duration}s ease-out`;
-                    
-                    scene.appendChild(particle);
-                    
-                    // Start animation after a small delay
-                    setTimeout(() => {
-                        particle.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
-                        particle.style.opacity = '0';
-                    }, 10);
-                    
-                    // Remove particle after animation
-                    setTimeout(() => {
-                        particle.remove();
-                    }, duration * 1000 + 100);
-                }
-            }
-            
-            function startAnimation() {
-                instructions.style.display = 'none';
-                
-                // 1. Human running animation - animate the entire div containing the image
-                human.style.animation = 'humanRunning 2s forwards';
-                
-                // 2. Light the fuse
-                setTimeout(() => {
-                    // Stop at rocket position
-                    human.style.animation = '';
+    <!-- Moon -->
+    <div class="moon"></div>
 
-                    // Show match
-                    match.style.opacity = '1';
-                    match.style.transform = 'rotate(-45deg)';
+    <!-- Character -->
+    <div class="character" id="character">
+        <img src="char.png" alt="Character" class="character-img" id="characterImg">
+    </div>
+
+    <!-- Jump Button -->
+    <button class="jump-btn" id="jumpBtn">click nd touch the moon</button>
+
+    <!-- Birthday Message -->
+    <div class="birthday-message" id="birthdayMessage"></div>
+
+    <!-- Reset Button -->
+    <button class="reset-btn" id="resetBtn">🔄 Play Again</button>
+
+    <script>
+        const character = document.getElementById('character');
+        const characterImg = document.getElementById('characterImg');
+        const jumpBtn = document.getElementById('jumpBtn');
+        const birthdayMessage = document.getElementById('birthdayMessage');
+        const resetBtn = document.getElementById('resetBtn');
+        const moon = document.querySelector('.moon');
+        const uploadArea = document.getElementById('uploadArea');
+        const imageInput = document.getElementById('imageInput');
+
+        let isJumping = false;
+        let velocity = 0;
+        let positionY = 0;
+        let gravity = 0.8;
+        let jumpCount = 0;
+        let baseJumpForce = 8;
+        let animationFrame;
+        let groundY = 0;
+        let moonReached = false;
+
+        // Position character at bottom initially
+        function positionCharacterAtBottom() {
+            groundY = window.innerHeight - character.offsetHeight - (window.innerHeight * 0.05);
+            positionY = groundY;
+            character.style.top = positionY + 'px';
+        }
+
+        // Handle image upload
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    // Update the existing image src
+                    characterImg.src = e.target.result;
                     
-                    // Match lights up
-                    matchHead.style.boxShadow = '0 0 10px 2px #f39c12';
+                    // Update upload area
+                    uploadArea.classList.add('has-image');
+                    uploadArea.innerHTML = '<div>✅ Image loaded!</div>';
                     
-                    // Light fuse
+                    // Hide upload area after 2 seconds
                     setTimeout(() => {
-                        fuseSpark.style.animation = 'lightFuse 2s forwards';
-                        
-                        // Human backs away
-                        setTimeout(() => {
-                            human.style.animation = 'humanBackAway 1.5s forwards';
-                            
-                            // Hide the match as human backs away
-                            setTimeout(() => {
-                                match.style.opacity = '0';
-                            }, 300);
-                        }, 500);
-                        
-                        // 3. Rocket launch
-                        setTimeout(() => {
-                            flame.style.animation = 'burn 0.3s infinite alternate';
-                            rocket.style.animation = 'launch 3s ease-in forwards';
-                            
-                            // 4. Explosion
-                            setTimeout(() => {
-                                // Get position for explosion (middle of screen)
-                                const explosionX = window.innerWidth / 2;
-                                const explosionY = window.innerHeight / 2;
-                                
-                                // Create explosion effect
-                                const explosion = document.createElement('div');
-                                explosion.style.position = 'absolute';
-                                explosion.style.left = '50%';
-                                explosion.style.top = '50%';
-                                explosion.style.width = '50px';
-                                explosion.style.height = '50px';
-                                explosion.style.borderRadius = '50%';
-                                explosion.style.background = 'radial-gradient(circle, #fff200, #ff4500)';
-                                explosion.style.boxShadow = '0 0 50px 20px #ff4500';
-                                explosion.style.zIndex = '5';
-                                explosion.style.animation = 'explode 1s forwards';
-                                scene.appendChild(explosion);
-                                
-                                // Create particles
-                                createExplosionParticles(explosionX, explosionY);
-                                
-                                // 5. Show celebration text
-                                setTimeout(() => {
-                                    messageContainer.style.animation = 'containerFade 1s forwards';
-                                    
-                                    // Set human to bobbing animation for celebration
-                                    human.style.animation = 'humanBob 1s infinite ease-in-out';
-                                    
-                                    // Animate each word
-                                    const words = document.querySelectorAll('.message-word');
-                                    words.forEach((word, wordIndex) => {
-                                        setTimeout(() => {
-                                            word.style.transform = 'scale(1)';
-                                            
-                                            // Animate each letter in the word
-                                            const letters = word.querySelectorAll('.message-letter');
-                                            letters.forEach((letter, letterIndex) => {
-                                                setTimeout(() => {
-                                                    letter.style.animation = 'fireIn 0.5s forwards';
-                                                }, letterIndex * 80);
-                                            });
-                                        }, wordIndex * 300);
-                                    });
-                                    
-                                    // Continue creating particles
-                                    const particleInterval = setInterval(() => {
-                                        createExplosionParticles(
-                                            Math.random() * window.innerWidth * 0.8 + window.innerWidth * 0.1,
-                                            Math.random() * window.innerHeight * 0.6 + window.innerHeight * 0.2
-                                        );
-                                    }, 800);
-                                    
-                                    // Stop particles after some time
-                                    setTimeout(() => {
-                                        clearInterval(particleInterval);
-                                    }, 4000);
-                                    
-                                }, 500);
-                                
-                            }, 2000);
-                            
-                        }, 2000);
-                        
-                    }, 500);
-                    
-                }, 2000);
+                        uploadArea.style.opacity = '0.3';
+                        uploadArea.style.transform = 'scale(0.8)';
+                    }, 2000);
+                };
+                reader.readAsDataURL(file);
             }
+        }
+
+        // Create stars with responsive sizing
+        function createStars() {
+            const starsContainer = document.querySelector('.stars-container');
+            const starCount = window.innerWidth < 768 ? 30 : 50; // Fewer stars on mobile
             
-            // Start animation on tap/click
-            scene.addEventListener('click', startAnimation, { once: true });
-            scene.addEventListener('touchstart', startAnimation, { once: true });
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                const size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Create particles effect
+        function createParticles(x, y, count = 10) {
+            // Reduce particle count on mobile for performance
+            const particleCount = window.innerWidth < 768 ? Math.ceil(count / 2) : count;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = x + 'px';
+                particle.style.top = y + 'px';
+                document.body.appendChild(particle);
+
+                const angle = (Math.PI * 2 * i) / particleCount;
+                const velocity = 2 + Math.random() * 3;
+                let posX = x;
+                let posY = y;
+                let opacity = 1;
+
+                const animate = () => {
+                    posX += Math.cos(angle) * velocity;
+                    posY += Math.sin(angle) * velocity + 0.5;
+                    opacity -= 0.02;
+
+                    particle.style.left = posX + 'px';
+                    particle.style.top = posY + 'px';
+                    particle.style.opacity = opacity;
+
+                    if (opacity > 0) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        particle.remove();
+                    }
+                };
+                animate();
+            }
+        }
+
+        // Create confetti
+        function createConfetti() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffd93d', '#ff9ff3'];
+            const confettiCount = window.innerWidth < 768 ? 20 : 30; // Fewer confetti on mobile
+            
+            for (let i = 0; i < confettiCount; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 2 + 's';
+                    document.body.appendChild(confetti);
+
+                    setTimeout(() => confetti.classList.add('active'), 10);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 100);
+            }
+        }
+
+        // Show birthday message letter by letter
+        function showBirthdayMessage() {
+            const message = "HAPPY 22 Yrs    10 Months Birthday!!";
+            birthdayMessage.innerHTML = '';
+            birthdayMessage.style.opacity = '1';
+
+            message.split('').forEach((letter, index) => {
+                const letterSpan = document.createElement('span');
+                letterSpan.className = 'letter';
+                letterSpan.textContent = letter === ' ' ? '\u00A0' : letter;
+                birthdayMessage.appendChild(letterSpan);
+
+                setTimeout(() => {
+                    letterSpan.classList.add('show');
+                    letterSpan.style.animationDelay = (index * 0.2) + 's';
+                    const rect = letterSpan.getBoundingClientRect();
+                    createParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 5);
+                }, index * 200);
+            });
+
+            setTimeout(() => {
+                createConfetti();
+                resetBtn.classList.add('show');
+            }, message.length * 200 + 500);
+        }
+
+        // Jump with cumulative height
+        function jump() {
+            if (isJumping || moonReached) return;
+
+            jumpCount++;
+            const jumpForce = baseJumpForce * jumpCount;
+            velocity = -jumpForce;
+            
+            isJumping = true;
+            character.classList.add('jumping');
+
+            const jumpAnimation = () => {
+                velocity += gravity;
+                positionY += velocity;
+
+                // Get moon and character positions (responsive)
+                const moonRect = moon.getBoundingClientRect();
+                const charRect = character.getBoundingClientRect();
+                
+                const moonCenterX = moonRect.left + moonRect.width / 2;
+                const moonCenterY = moonRect.top + moonRect.height / 2;
+                const charCenterX = charRect.left + charRect.width / 2;
+                const charCenterY = charRect.top + charRect.height / 2;
+
+                const distance = Math.sqrt(Math.pow(moonCenterX - charCenterX, 2) + Math.pow(moonCenterY - charCenterY, 2));
+
+                if (distance < (moonRect.width / 2 + charRect.width / 2 + 20) && !moonReached) {
+                    moonReached = true;
+                    character.classList.add('reached-moon');
+                    moon.style.animation = 'bounce 0.5s ease-in-out 3';
+                    createParticles(moonCenterX, moonCenterY, 15);
+
+                    setTimeout(() => {
+                        showBirthdayMessage();
+                    }, 500);
+
+                    cancelAnimationFrame(animationFrame);
+                    character.classList.remove('jumping');
+                    return;
+                }
+
+                if (positionY >= groundY) {
+                    positionY = groundY;
+                    velocity = 0;
+                    isJumping = false;
+                    character.classList.remove('jumping');
+                    character.style.top = positionY + 'px';
+                    
+                    cancelAnimationFrame(animationFrame);
+                    return;
+                }
+
+                character.style.top = positionY + 'px';
+                animationFrame = requestAnimationFrame(jumpAnimation);
+            };
+
+            jumpAnimation();
+        }
+
+        // Reset game
+        function resetGame() {
+            moonReached = false;
+            isJumping = false;
+            velocity = 0;
+            jumpCount = 0;
+            cancelAnimationFrame(animationFrame);
+
+            character.classList.remove('jumping', 'reached-moon');
+            jumpBtn.textContent = '🚀 Jump!';
+            birthdayMessage.style.opacity = '0';
+            birthdayMessage.innerHTML = '';
+            resetBtn.classList.remove('show');
+            moon.style.animation = '';
+
+            positionCharacterAtBottom();
+            document.querySelectorAll('.particle, .confetti').forEach(el => el.remove());
+        }
+
+        // Bounce animation keyframe for moon
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes bounce {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.2); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Event listeners
+        jumpBtn.addEventListener('click', jump);
+        jumpBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            jump();
         });
+
+        resetBtn.addEventListener('click', resetGame);
+        resetBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            resetGame();
+        });
+
+        uploadArea.addEventListener('click', () => {
+            imageInput.click();
+        });
+
+        imageInput.addEventListener('change', handleImageUpload);
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            if (!isJumping && !moonReached) {
+                positionCharacterAtBottom();
+            }
+        });
+
+        // Moon hover/touch effect
+        moon.addEventListener('mouseenter', () => {
+            if (!moonReached) {
+                const rect = moon.getBoundingClientRect();
+                createParticles(rect.left + rect.width/2, rect.top + rect.height/2, 8);
+            }
+        });
+
+        moon.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (!moonReached) {
+                const rect = moon.getBoundingClientRect();
+                createParticles(rect.left + rect.width/2, rect.top + rect.height/2, 8);
+            }
+        });
+
+        // Initialize game
+        createStars();
+        positionCharacterAtBottom();
+
+        // Prevent default touch behaviors
+        document.addEventListener('touchstart', (e) => {
+            if (e.target.tagName !== 'INPUT') {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        document.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
     </script>
+
 </body>
+
 </html>
