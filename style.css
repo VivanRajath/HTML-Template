@@ -93,11 +93,11 @@
 
   /* Character image */
   .character-img {
-    width: 150%;
-    height: 221%;
-    /* border: 3px solid rgba(255, 255, 255, 0.3); */
-    /* box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); */
-}
+      width: 150%;
+      height: 221%;
+      /* border: 3px solid rgba(255, 255, 255, 0.3); */
+      /* box-shadow: 0 0 15px rgba(255, 255, 255, 0.2); */
+  }
 
   .character.reached-moon {
       transform: rotate(-15deg);
@@ -149,7 +149,7 @@
   /* Jump button - mobile friendly */
   .jump-btn {
       position: absolute;
-      bottom: 5vh;
+      bottom: 80px;
       right: 5vw;
       padding: clamp(12px, 3vw, 18px) clamp(20px, 5vw, 35px);
       background: linear-gradient(45deg, #667eea, #764ba2);
@@ -215,6 +215,14 @@
       transform: translateY(50px) rotate(10deg) scale(0);
       transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       animation: letterFloat 3s ease-in-out infinite;
+      display: inline-block;
+
+  }
+
+  .message-line {
+      text-align: center;
+      margin-bottom: 10px;
+      width: 600px;
   }
 
   .letter.show {
@@ -362,30 +370,14 @@
   }
 
   @media (max-height: 600px) {
-      .birthday-message {
-          top: 40vh;
-          font-size: clamp(40px, 6vw, 40px);
-          width: 600px;
-      }
+        .birthday-message {
+        top: 39vh; 
+        font-size: clamp(37px, 6vw, 40px);
+        width: 800px;
+    }
 
       .moon {
           top: 5vh;
       }
   }
 
-  /* Landscape mobile */
-  @media (max-width: 320px) and (orientation: landscape) {
-      .birthday-message {
-          top: 15vh;
-          font-size: clamp(20px, 5vw, 35px);
-      }
-
-      .moon {
-          top: 5vh;
-          left: 3vw;
-      }
-
-      .character {
-          left: 3vw;
-      }
-  }

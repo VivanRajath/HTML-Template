@@ -14,7 +14,7 @@
     <div class="stars-container"></div>
 
     <!-- Image Upload Area -->
-    <div class="image-upload-area" id="uploadArea" >
+    <div class="image-upload-area" id="uploadArea">
         <div>📷 Tap to add character image</div>
         <input type="file" id="imageInput" accept="image/*">
     </div>
@@ -68,14 +68,14 @@
             const file = event.target.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     // Update the existing image src
                     characterImg.src = e.target.result;
-                    
+
                     // Update upload area
                     uploadArea.classList.add('has-image');
                     uploadArea.innerHTML = '<div>✅ Image loaded!</div>';
-                    
+
                     // Hide upload area after 2 seconds
                     setTimeout(() => {
                         uploadArea.style.opacity = '0.3';
@@ -90,7 +90,7 @@
         function createStars() {
             const starsContainer = document.querySelector('.stars-container');
             const starCount = window.innerWidth < 768 ? 30 : 50; // Fewer stars on mobile
-            
+
             for (let i = 0; i < starCount; i++) {
                 const star = document.createElement('div');
                 star.className = 'star';
@@ -108,7 +108,7 @@
         function createParticles(x, y, count = 10) {
             // Reduce particle count on mobile for performance
             const particleCount = window.innerWidth < 768 ? Math.ceil(count / 2) : count;
-            
+
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
@@ -145,7 +145,7 @@
         function createConfetti() {
             const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffd93d', '#ff9ff3'];
             const confettiCount = window.innerWidth < 768 ? 20 : 30; // Fewer confetti on mobile
-            
+
             for (let i = 0; i < confettiCount; i++) {
                 setTimeout(() => {
                     const confetti = document.createElement('div');
@@ -161,31 +161,50 @@
             }
         }
 
-        // Show birthday message letter by letter
+        // Show birthday message line by line, letter by letter
         function showBirthdayMessage() {
-            const message = "HAPPY 22 Yrs    10 Months Birthday!!";
+            const lines = [
+                "HAPPY",
+                "22 Yrs 10 Months",
+                "Birthday!!"
+            ];
+
             birthdayMessage.innerHTML = '';
             birthdayMessage.style.opacity = '1';
 
-            message.split('').forEach((letter, index) => {
-                const letterSpan = document.createElement('span');
-                letterSpan.className = 'letter';
-                letterSpan.textContent = letter === ' ' ? '\u00A0' : letter;
-                birthdayMessage.appendChild(letterSpan);
+            const delayPerLetter = 200;
+            let totalDelay = 0;
 
-                setTimeout(() => {
-                    letterSpan.classList.add('show');
-                    letterSpan.style.animationDelay = (index * 0.2) + 's';
-                    const rect = letterSpan.getBoundingClientRect();
-                    createParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 5);
-                }, index * 200);
+            lines.forEach((line, lineIndex) => {
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'message-line';
+                birthdayMessage.appendChild(lineDiv);
+
+                line.split('').forEach((letter, charIndex) => {
+                    const letterSpan = document.createElement('span');
+                    letterSpan.className = 'letter';
+                    letterSpan.textContent = letter === ' ' ? '\u00A0' : letter;
+                    lineDiv.appendChild(letterSpan);
+
+                    setTimeout(() => {
+                        letterSpan.classList.add('show');
+                        letterSpan.style.animationDelay = (charIndex * 0.2) + 's';
+
+                        const rect = letterSpan.getBoundingClientRect();
+                        createParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 5);
+                    }, totalDelay + charIndex * delayPerLetter);
+                });
+
+                // Add extra delay for next line to start after current finishes
+                totalDelay += line.length * delayPerLetter + 500;
             });
 
             setTimeout(() => {
                 createConfetti();
                 resetBtn.classList.add('show');
-            }, message.length * 200 + 500);
+            }, totalDelay + 500);
         }
+
 
         // Jump with cumulative height
         function jump() {
@@ -194,7 +213,7 @@
             jumpCount++;
             const jumpForce = baseJumpForce * jumpCount;
             velocity = -jumpForce;
-            
+
             isJumping = true;
             character.classList.add('jumping');
 
@@ -205,7 +224,7 @@
                 // Get moon and character positions (responsive)
                 const moonRect = moon.getBoundingClientRect();
                 const charRect = character.getBoundingClientRect();
-                
+
                 const moonCenterX = moonRect.left + moonRect.width / 2;
                 const moonCenterY = moonRect.top + moonRect.height / 2;
                 const charCenterX = charRect.left + charRect.width / 2;
@@ -234,7 +253,7 @@
                     isJumping = false;
                     character.classList.remove('jumping');
                     character.style.top = positionY + 'px';
-                    
+
                     cancelAnimationFrame(animationFrame);
                     return;
                 }
@@ -305,7 +324,7 @@
         moon.addEventListener('mouseenter', () => {
             if (!moonReached) {
                 const rect = moon.getBoundingClientRect();
-                createParticles(rect.left + rect.width/2, rect.top + rect.height/2, 8);
+                createParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 8);
             }
         });
 
@@ -313,7 +332,7 @@
             e.preventDefault();
             if (!moonReached) {
                 const rect = moon.getBoundingClientRect();
-                createParticles(rect.left + rect.width/2, rect.top + rect.height/2, 8);
+                createParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 8);
             }
         });
 
