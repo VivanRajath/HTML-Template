@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Birthday Moon Flight</title>
+    <title>Birthday temp</title>
     <link rel="stylesheet" href="style.css">
 
 </head>
@@ -12,6 +12,17 @@
 <body>
     <!-- Stars -->
     <div class="stars-container"></div>
+
+    <!-- Instruction Banner -->
+    <div class="instruction-banner" id="instructionBanner">
+        <div class="instruction-content">
+            <strong>Click on the <em>"Jump"</em> button to make <span
+                    class="highlight">Vivan</span> jump and touch the moon for a surprise!</strong>
+            <button class="close-btn"
+                onclick="document.getElementById('instructionBanner').style.display='none'">Close</button>
+        </div>
+    </div>
+
 
     <!-- Image Upload Area -->
     <div class="image-upload-area" id="uploadArea">
@@ -28,7 +39,7 @@
     </div>
 
     <!-- Jump Button -->
-    <button class="jump-btn" id="jumpBtn">click nd touch the moon</button>
+    <button class="jump-btn" id="jumpBtn">Jump</button>
 
     <!-- Birthday Message -->
     <div class="birthday-message" id="birthdayMessage"></div>
@@ -350,6 +361,11 @@
         document.addEventListener('touchmove', (e) => {
             e.preventDefault();
         }, { passive: false });
+
+
+    setTimeout(() => {
+        document.getElementById('instructionBanner').style.display = 'none';
+    }, 5000);
     </script>
 
 </body>

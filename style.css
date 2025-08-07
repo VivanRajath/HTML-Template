@@ -381,3 +381,53 @@
       }
   }
 
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+
+/* Instruction Banner */
+.instruction-banner {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(135deg, #ffe9c6, #ffe1f7);
+    border: 2px solid #fcb1d1;
+    border-radius: 12px;
+    padding: 20px;
+    z-index: 9999;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    animation: fadeIn 1s ease;
+}
+
+.instruction-content {
+    font-size: 1.1rem;
+    color: #333;
+    text-align: center;
+}
+
+.instruction-content .highlight {
+    color: #ff4d6d;
+    font-weight: bold;
+}
+
+.close-btn {
+    margin-top: 12px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.close-btn:hover {
+    background-color: #d93636;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -10px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+}
