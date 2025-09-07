@@ -78,7 +78,7 @@
             </div>
             <div class="lock-question" id="lockQuestion">Who is your favorite person?</div>
             <input type="text" class="lock-input" id="lockInput" placeholder="Enter your answer...">
-            <button class="lock-button" id="unlockBtn">🗝️ Unlock Treasure</button>
+            <button type="button" class="lock-button" id="unlockBtn">🗝️ Unlock Treasure</button>
             <div class="wrong-answer" id="wrongAnswer">Try again! Think of a nickname...</div>
         </div>
     </div>
@@ -186,6 +186,12 @@
         document.addEventListener('click', handleTouch);
 
         function handleTouch(e) {
+            // If the touch/click is on the lock screen controls, let them work normally
+            if (e.target.closest('#lockScreen') || e.target.closest('#unlockBtn') || e.target.closest('#lockInput')) {
+                return;
+            }
+
+            // Prevent default only for game touches
             e.preventDefault();
 
             if (gameState === 'fishing') {
@@ -282,8 +288,12 @@
             }
         }
 
-        // ✅ Only button triggers checkAnswer now
+        // ✅ Unlock button listeners (works on mobile too)
         unlockBtn.addEventListener('click', checkAnswer);
+        unlockBtn.addEventListener('touchend', (ev) => {
+            ev.stopPropagation();
+            checkAnswer();
+        });
 
         // Open treasure and show victory
         function openTreasure() {
@@ -338,12 +348,12 @@
         // Add shake animation to CSS
         const style = document.createElement('style');
         style.textContent = `
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
-        }
-    `;
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-8px); }
+        75% { transform: translateX(8px); }
+    }
+`;
         document.head.appendChild(style);
 
         // Start game
@@ -387,8 +397,8 @@
             attributes: true,
             attributeFilter: ['style']
         });
-
     </script>
+
 </body>
 
 </html>
