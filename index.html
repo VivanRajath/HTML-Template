@@ -1,373 +1,394 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Birthday temp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Fishing Treasure Game</title>
     <link rel="stylesheet" href="style.css">
-
+   
 </head>
-
 <body>
-    <!-- Stars -->
-    <div class="stars-container"></div>
+    <div class="game-container">
+        <!-- Sun and clouds -->
+        <div class="sun"></div>
+        <div class="clouds">☁️</div>
 
-    <!-- Instruction Banner -->
-    <div class="instruction-banner" id="instructionBanner">
-        <div class="instruction-content">
-            <strong>Click on the <em>"Jump"</em> button to make <span
-                    class="highlight">Vivan</span> jump and touch the moon for a surprise!</strong>
-            <button class="close-btn"
-                onclick="document.getElementById('instructionBanner').style.display='none'">Close</button>
+        <!-- Ocean and Waves -->
+        <div class="waves">
+            <div class="wave"></div>
+            <div class="wave"></div>
+        </div>
+
+        <!-- Swimming fish -->
+        <div class="fish">🐟</div>
+
+        <!-- Bubbles -->
+        <div class="bubbles" id="bubbles"></div>
+
+        <!-- Boat with Fisherman -->
+        <div class="boat">
+            <div class="boat-body">
+                <div class="boat-deck"></div>
+            </div>
+            <div class="fisherman">
+                <div class="fisherman-hat"></div>
+                <div class="fisherman-head"></div>
+                <div class="fisherman-body"></div>
+            </div>
+            <div class="fishing-rod"></div>
+        </div>
+
+        <!-- Fishing Line -->
+        <div class="fishing-line" id="fishingLine">
+            <div class="hook"></div>
+        </div>
+
+        <!-- Treasure -->
+        <div class="treasure" id="treasure"></div>
+
+        <!-- Catch Zone -->
+        <div class="catch-zone" id="catchZone"></div>
+
+        <!-- Pull Progress -->
+        <div class="pull-progress" id="pullProgress">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instruction" id="instruction">
+            Watch the line sway and tap when it's over the treasure!
         </div>
     </div>
 
-
-    <!-- Image Upload Area -->
-    <div class="image-upload-area" id="uploadArea">
-        <div>📷 Tap to add character image</div>
-        <input type="file" id="imageInput" accept="image/*">
+    <!-- 3D Lock Screen -->
+    <div class="lock-screen" id="lockScreen">
+        <div class="sparkles" id="sparkles"></div>
+        <div class="chest-container">
+            <div class="treasure-chest-3d">
+                <div class="chest-body"></div>
+                <div class="chest-lid" id="chestLid"></div>
+                <div class="chest-lock">
+                    <div class="lock-body">
+                        <div class="lock-shackle"></div>
+                        <div class="keyhole"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="lock-question" id="lockQuestion">Who is your favorite person?</div>
+            <input type="text" class="lock-input" id="lockInput" placeholder="Enter your answer...">
+            <button class="lock-button" onclick="checkAnswer()">🗝️ Unlock Treasure</button>
+            <div class="wrong-answer" id="wrongAnswer">Try again! Think of a nickname...</div>
+        </div>
     </div>
 
-    <!-- Moon -->
-    <div class="moon"></div>
-
-    <!-- Character -->
-    <div class="character" id="character">
-        <img src="char.png" alt="Character" class="character-img" id="characterImg">
+    <!-- Victory Screen -->
+    <div class="victory-screen" id="victoryScreen">
+        <div class="message-container" id="messageContainer">
+            <div class="hearts-static">💕❤️💕</div>
+        </div>
+        <div class="floating-hearts" id="floatingHearts"></div>
     </div>
-
-    <!-- Jump Button -->
-    <button class="jump-btn" id="jumpBtn">Jump</button>
-
-    <!-- Birthday Message -->
-    <div class="birthday-message" id="birthdayMessage"></div>
-
-    <!-- Reset Button -->
-    <button class="reset-btn" id="resetBtn">🔄 Play Again</button>
 
     <script>
-        const character = document.getElementById('character');
-        const characterImg = document.getElementById('characterImg');
-        const jumpBtn = document.getElementById('jumpBtn');
-        const birthdayMessage = document.getElementById('birthdayMessage');
-        const resetBtn = document.getElementById('resetBtn');
-        const moon = document.querySelector('.moon');
-        const uploadArea = document.getElementById('uploadArea');
-        const imageInput = document.getElementById('imageInput');
+        let gameState = 'fishing'; // fishing, pulling, locked, victory
+        let swayDirection = 1;
+        let linePosition = 50;
+        let pullProgress = 0;
+        let lockAttempts = 0;
+        
+        const fishingLine = document.getElementById('fishingLine');
+        const treasure = document.getElementById('treasure');
+        const catchZone = document.getElementById('catchZone');
+        const instruction = document.getElementById('instruction');
+        const pullProgressBar = document.getElementById('pullProgress');
+        const progressBar = document.getElementById('progressBar');
+        const lockScreen = document.getElementById('lockScreen');
+        const lockQuestion = document.getElementById('lockQuestion');
+        const lockInput = document.getElementById('lockInput');
+        const wrongAnswer = document.getElementById('wrongAnswer');
+        const chestLid = document.getElementById('chestLid');
+        const sparkles = document.getElementById('sparkles');
+        const victoryScreen = document.getElementById('victoryScreen');
+        const messageContainer = document.getElementById('messageContainer');
 
-        let isJumping = false;
-        let velocity = 0;
-        let positionY = 0;
-        let gravity = 0.8;
-        let jumpCount = 0;
-        let baseJumpForce = 8;
-        let animationFrame;
-        let groundY = 0;
-        let moonReached = false;
-
-        // Position character at bottom initially
-        function positionCharacterAtBottom() {
-            groundY = window.innerHeight - character.offsetHeight - (window.innerHeight * 0.05);
-            positionY = groundY;
-            character.style.top = positionY + 'px';
+        // Initialize game
+        function initGame() {
+            // Position treasure randomly
+            const treasureX = Math.random() * (window.innerWidth - 100) + 50;
+            treasure.style.left = treasureX + 'px';
+            
+            // Position catch zone over treasure
+            catchZone.style.left = (treasureX - 10) + 'px';
+            catchZone.style.bottom = '8%';
+            catchZone.style.display = 'block';
+            
+            // Start line swaying
+            swayLine();
+            
+            // Create bubbles and sparkles
+            setInterval(createBubble, 800);
         }
 
-        // Handle image upload
-        function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    // Update the existing image src
-                    characterImg.src = e.target.result;
-
-                    // Update upload area
-                    uploadArea.classList.add('has-image');
-                    uploadArea.innerHTML = '<div>✅ Image loaded!</div>';
-
-                    // Hide upload area after 2 seconds
-                    setTimeout(() => {
-                        uploadArea.style.opacity = '0.3';
-                        uploadArea.style.transform = 'scale(0.8)';
-                    }, 2000);
-                };
-                reader.readAsDataURL(file);
+        // Line swaying animation
+        function swayLine() {
+            if (gameState !== 'fishing') return;
+            
+            linePosition += swayDirection * 1.5;
+            
+            if (linePosition >= 85 || linePosition <= 15) {
+                swayDirection *= -1;
             }
+            
+            fishingLine.style.left = linePosition + '%';
+            fishingLine.style.height = '45%';
+            
+            requestAnimationFrame(swayLine);
         }
 
-        // Create stars with responsive sizing
-        function createStars() {
-            const starsContainer = document.querySelector('.stars-container');
-            const starCount = window.innerWidth < 768 ? 30 : 50; // Fewer stars on mobile
-
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                const size = Math.random() * 3 + 1;
-                star.style.width = size + 'px';
-                star.style.height = size + 'px';
-                star.style.animationDelay = Math.random() * 2 + 's';
-                starsContainer.appendChild(star);
-            }
-        }
-
-        // Create particles effect
-        function createParticles(x, y, count = 10) {
-            // Reduce particle count on mobile for performance
-            const particleCount = window.innerWidth < 768 ? Math.ceil(count / 2) : count;
-
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                document.body.appendChild(particle);
-
-                const angle = (Math.PI * 2 * i) / particleCount;
-                const velocity = 2 + Math.random() * 3;
-                let posX = x;
-                let posY = y;
-                let opacity = 1;
-
-                const animate = () => {
-                    posX += Math.cos(angle) * velocity;
-                    posY += Math.sin(angle) * velocity + 0.5;
-                    opacity -= 0.02;
-
-                    particle.style.left = posX + 'px';
-                    particle.style.top = posY + 'px';
-                    particle.style.opacity = opacity;
-
-                    if (opacity > 0) {
-                        requestAnimationFrame(animate);
-                    } else {
-                        particle.remove();
-                    }
-                };
-                animate();
-            }
-        }
-
-        // Create confetti
-        function createConfetti() {
-            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffd93d', '#ff9ff3'];
-            const confettiCount = window.innerWidth < 768 ? 20 : 30; // Fewer confetti on mobile
-
-            for (let i = 0; i < confettiCount; i++) {
-                setTimeout(() => {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + '%';
-                    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                    confetti.style.animationDelay = Math.random() * 2 + 's';
-                    document.body.appendChild(confetti);
-
-                    setTimeout(() => confetti.classList.add('active'), 10);
-                    setTimeout(() => confetti.remove(), 3000);
-                }, i * 100);
-            }
-        }
-
-        // Show birthday message line by line, letter by letter
-        function showBirthdayMessage() {
-            const lines = [
-                "HAPPY",
-                "22 Yrs 10 Months",
-                "Birthday!!"
-            ];
-
-            birthdayMessage.innerHTML = '';
-            birthdayMessage.style.opacity = '1';
-
-            const delayPerLetter = 200;
-            let totalDelay = 0;
-
-            lines.forEach((line, lineIndex) => {
-                const lineDiv = document.createElement('div');
-                lineDiv.className = 'message-line';
-                birthdayMessage.appendChild(lineDiv);
-
-                line.split('').forEach((letter, charIndex) => {
-                    const letterSpan = document.createElement('span');
-                    letterSpan.className = 'letter';
-                    letterSpan.textContent = letter === ' ' ? '\u00A0' : letter;
-                    lineDiv.appendChild(letterSpan);
-
-                    setTimeout(() => {
-                        letterSpan.classList.add('show');
-                        letterSpan.style.animationDelay = (charIndex * 0.2) + 's';
-
-                        const rect = letterSpan.getBoundingClientRect();
-                        createParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 5);
-                    }, totalDelay + charIndex * delayPerLetter);
-                });
-
-                // Add extra delay for next line to start after current finishes
-                totalDelay += line.length * delayPerLetter + 500;
-            });
-
+        // Create bubbles
+        function createBubble() {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            bubble.style.left = Math.random() * 100 + '%';
+            bubble.style.width = bubble.style.height = Math.random() * 15 + 8 + 'px';
+            bubble.style.animationDelay = Math.random() * 2 + 's';
+            document.getElementById('bubbles').appendChild(bubble);
+            
             setTimeout(() => {
-                createConfetti();
-                resetBtn.classList.add('show');
-            }, totalDelay + 500);
-        }
-
-
-        // Jump with cumulative height
-        function jump() {
-            if (isJumping || moonReached) return;
-
-            jumpCount++;
-            const jumpForce = baseJumpForce * jumpCount;
-            velocity = -jumpForce;
-
-            isJumping = true;
-            character.classList.add('jumping');
-
-            const jumpAnimation = () => {
-                velocity += gravity;
-                positionY += velocity;
-
-                // Get moon and character positions (responsive)
-                const moonRect = moon.getBoundingClientRect();
-                const charRect = character.getBoundingClientRect();
-
-                const moonCenterX = moonRect.left + moonRect.width / 2;
-                const moonCenterY = moonRect.top + moonRect.height / 2;
-                const charCenterX = charRect.left + charRect.width / 2;
-                const charCenterY = charRect.top + charRect.height / 2;
-
-                const distance = Math.sqrt(Math.pow(moonCenterX - charCenterX, 2) + Math.pow(moonCenterY - charCenterY, 2));
-
-                if (distance < (moonRect.width / 2 + charRect.width / 2 + 20) && !moonReached) {
-                    moonReached = true;
-                    character.classList.add('reached-moon');
-                    moon.style.animation = 'bounce 0.5s ease-in-out 3';
-                    createParticles(moonCenterX, moonCenterY, 15);
-
-                    setTimeout(() => {
-                        showBirthdayMessage();
-                    }, 500);
-
-                    cancelAnimationFrame(animationFrame);
-                    character.classList.remove('jumping');
-                    return;
+                if (bubble.parentNode) {
+                    bubble.parentNode.removeChild(bubble);
                 }
+            }, 4000);
+        }
 
-                if (positionY >= groundY) {
-                    positionY = groundY;
-                    velocity = 0;
-                    isJumping = false;
-                    character.classList.remove('jumping');
-                    character.style.top = positionY + 'px';
-
-                    cancelAnimationFrame(animationFrame);
-                    return;
+        // Create sparkles
+        function createSparkle() {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.textContent = '✨';
+            sparkle.style.left = Math.random() * 100 + '%';
+            sparkle.style.top = Math.random() * 100 + '%';
+            sparkle.style.animationDelay = Math.random() * 2 + 's';
+            sparkles.appendChild(sparkle);
+            
+            setTimeout(() => {
+                if (sparkle.parentNode) {
+                    sparkle.parentNode.removeChild(sparkle);
                 }
-
-                character.style.top = positionY + 'px';
-                animationFrame = requestAnimationFrame(jumpAnimation);
-            };
-
-            jumpAnimation();
+            }, 2000);
         }
 
-        // Reset game
-        function resetGame() {
-            moonReached = false;
-            isJumping = false;
-            velocity = 0;
-            jumpCount = 0;
-            cancelAnimationFrame(animationFrame);
+        // Touch/Click handler
+        document.addEventListener('touchstart', handleTouch, { passive: false });
+        document.addEventListener('click', handleTouch);
 
-            character.classList.remove('jumping', 'reached-moon');
-            jumpBtn.textContent = '🚀 Jump!';
-            birthdayMessage.style.opacity = '0';
-            birthdayMessage.innerHTML = '';
-            resetBtn.classList.remove('show');
-            moon.style.animation = '';
-
-            positionCharacterAtBottom();
-            document.querySelectorAll('.particle, .confetti').forEach(el => el.remove());
+        function handleTouch(e) {
+            e.preventDefault();
+            
+            if (gameState === 'fishing') {
+                checkCatch();
+            } else if (gameState === 'pulling') {
+                pullTreasure();
+            }
         }
 
-        // Bounce animation keyframe for moon
+        // Check if line is over treasure
+        function checkCatch() {
+            const lineRect = fishingLine.getBoundingClientRect();
+            const treasureRect = treasure.getBoundingClientRect();
+            const zoneRect = catchZone.getBoundingClientRect();
+            
+            const lineX = lineRect.left + lineRect.width / 2;
+            const zoneX = zoneRect.left + zoneRect.width / 2;
+            
+            if (Math.abs(lineX - zoneX) < 50) {
+                // Successful catch!
+                gameState = 'pulling';
+                instruction.textContent = 'Keep tapping to pull up the treasure!';
+                catchZone.style.display = 'none';
+                pullProgressBar.style.display = 'block';
+                
+                // Animate treasure moving to hook
+                treasure.style.bottom = '45%';
+                treasure.style.left = (linePosition - 2) + '%';
+            } else {
+                // Miss - shake the screen briefly
+                document.body.style.animation = 'shake 0.3s ease-in-out';
+                setTimeout(() => {
+                    document.body.style.animation = '';
+                }, 300);
+            }
+        }
+
+        // Pull treasure progress
+        function pullTreasure() {
+            pullProgress += 6;
+            progressBar.style.width = pullProgress + '%';
+            
+            // Move treasure higher as progress increases
+            const newBottom = 30 + (pullProgress / 100) * 25;
+            treasure.style.bottom = newBottom + '%';
+            
+            if (pullProgress >= 100) {
+                gameState = 'locked';
+                instruction.style.display = 'none';
+                pullProgressBar.style.display = 'none';
+                lockScreen.style.display = 'flex';
+                
+                // Hide treasure from main screen
+                treasure.style.display = 'none';
+                
+                // Start creating sparkles
+                setInterval(createSparkle, 300);
+            }
+        }
+
+        // Check lock answer
+        function checkAnswer() {
+            const answer = lockInput.value.trim().toLowerCase();
+            
+            if (answer === 'bubbuu' || answer === 'bubbu') {
+                wrongAnswer.style.display = 'none';
+                
+                // Animate chest opening
+                chestLid.classList.add('unlock-animation');
+                
+                setTimeout(() => {
+                    openTreasure();
+                }, 1000);
+            } else {
+                lockAttempts++;
+                lockInput.value = '';
+                wrongAnswer.style.display = 'block';
+                
+                if (lockAttempts === 1) {
+                    lockQuestion.textContent = "Hmm, try his nickname...";
+                    wrongAnswer.textContent = "Think of someone special... 💕";
+                } else if (lockAttempts === 2) {
+                    lockQuestion.textContent = "Hint: B_bb_u";
+                    wrongAnswer.textContent = "You're getting closer! Fill in the blanks...";
+                } else if (lockAttempts >= 3) {
+                    lockQuestion.textContent = "Just type: Bubbuu";
+                    wrongAnswer.textContent = "Here's the answer! Type it exactly...";
+                }
+                
+                // Shake animation for wrong answer
+                document.querySelector('.chest-container').style.animation = 'none';
+                setTimeout(() => {
+                    document.querySelector('.chest-container').style.animation = 'chestFloat 3s ease-in-out infinite';
+                }, 100);
+            }
+        }
+
+        // Handle enter key in input
+        lockInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // Open treasure and show victory
+        function openTreasure() {
+            gameState = 'victory';
+            lockScreen.style.display = 'none';
+            victoryScreen.style.display = 'flex';
+            
+            // Create animated message with better spacing
+            const messages = [
+                "Happyy 22yrs",
+                "11months",
+                "anniversaryyy",
+                "1 more month",
+                "to goooo! 💕"
+            ];
+            
+            messages.forEach((msg, index) => {
+                setTimeout(() => {
+                    const messageEl = document.createElement('div');
+                    messageEl.className = 'message';
+                    messageEl.textContent = msg;
+                    messageEl.style.animationDelay = (index * 0.2) + 's';
+                    messageContainer.appendChild(messageEl);
+                }, index * 500);
+            });
+            
+            // Create floating hearts
+            createFloatingHearts();
+        }
+
+        // Create floating hearts animation
+        function createFloatingHearts() {
+            const heartsContainer = document.getElementById('floatingHearts');
+            
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = ['💕', '❤️', '💖', '💝'][Math.floor(Math.random() * 4)];
+                heart.style.left = Math.random() * 100 + '%';
+                heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                heartsContainer.appendChild(heart);
+                
+                // Remove heart after animation
+                setTimeout(() => {
+                    if (heart.parentNode) {
+                        heart.remove();
+                    }
+                }, 5000);
+            }, 600);
+        }
+
+        // Add shake animation to CSS
         const style = document.createElement('style');
         style.textContent = `
-            @keyframes bounce {
-                0%, 100% { transform: scale(1); }
-                50% { transform: scale(1.2); }
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-8px); }
+                75% { transform: translateX(8px); }
             }
         `;
         document.head.appendChild(style);
 
-        // Event listeners
-        jumpBtn.addEventListener('click', jump);
-        jumpBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            jump();
-        });
+        // Start game
+        initGame();
 
-        resetBtn.addEventListener('click', resetGame);
-        resetBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            resetGame();
-        });
-
-        uploadArea.addEventListener('click', () => {
-            imageInput.click();
-        });
-
-        imageInput.addEventListener('change', handleImageUpload);
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            if (!isJumping && !moonReached) {
-                positionCharacterAtBottom();
-            }
-        });
-
-        // Moon hover/touch effect
-        moon.addEventListener('mouseenter', () => {
-            if (!moonReached) {
-                const rect = moon.getBoundingClientRect();
-                createParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 8);
-            }
-        });
-
-        moon.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if (!moonReached) {
-                const rect = moon.getBoundingClientRect();
-                createParticles(rect.left + rect.width / 2, rect.top + rect.height / 2, 8);
-            }
-        });
-
-        // Initialize game
-        createStars();
-        positionCharacterAtBottom();
-
-        // Prevent default touch behaviors
-        document.addEventListener('touchstart', (e) => {
-            if (e.target.tagName !== 'INPUT') {
+        // Prevent zoom on mobile
+        document.addEventListener('touchmove', function(e) {
+            if (e.scale !== 1) {
                 e.preventDefault();
             }
         }, { passive: false });
 
-        document.addEventListener('touchmove', (e) => {
+        // Prevent double-tap zoom
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function(e) {
+            const now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                e.preventDefault();
+            }
+            lastTouchEnd = now;
+        });
+
+        // Prevent context menu
+        document.addEventListener('contextmenu', function(e) {
             e.preventDefault();
-        }, { passive: false });
+        });
 
+        // Focus input when lock screen appears
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.target.id === 'lockScreen' && 
+                    mutation.target.style.display === 'flex') {
+                    setTimeout(() => {
+                        lockInput.focus();
+                    }, 500);
+                }
+            });
+        });
 
-    setTimeout(() => {
-        document.getElementById('instructionBanner').style.display = 'none';
-    }, 5000);
+        observer.observe(lockScreen, {
+            attributes: true,
+            attributeFilter: ['style']
+        });
     </script>
-
 </body>
-
 </html>
