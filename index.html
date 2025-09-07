@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Fishing Treasure Game</title>
     <link rel="stylesheet" href="style.css">
-   
+
 </head>
+
 <body>
     <div class="game-container">
         <!-- Sun and clouds -->
@@ -76,7 +78,7 @@
             </div>
             <div class="lock-question" id="lockQuestion">Who is your favorite person?</div>
             <input type="text" class="lock-input" id="lockInput" placeholder="Enter your answer...">
-            <button class="lock-button" onclick="checkAnswer()">🗝️ Unlock Treasure</button>
+            <button class="lock-button" id="unlockBtn">🗝️ Unlock Treasure</button>
             <div class="wrong-answer" id="wrongAnswer">Try again! Think of a nickname...</div>
         </div>
     </div>
@@ -95,7 +97,7 @@
         let linePosition = 50;
         let pullProgress = 0;
         let lockAttempts = 0;
-        
+
         const fishingLine = document.getElementById('fishingLine');
         const treasure = document.getElementById('treasure');
         const catchZone = document.getElementById('catchZone');
@@ -110,38 +112,39 @@
         const sparkles = document.getElementById('sparkles');
         const victoryScreen = document.getElementById('victoryScreen');
         const messageContainer = document.getElementById('messageContainer');
+        const unlockBtn = document.getElementById('unlockBtn');
 
         // Initialize game
         function initGame() {
             // Position treasure randomly
             const treasureX = Math.random() * (window.innerWidth - 100) + 50;
             treasure.style.left = treasureX + 'px';
-            
+
             // Position catch zone over treasure
             catchZone.style.left = (treasureX - 10) + 'px';
             catchZone.style.bottom = '8%';
             catchZone.style.display = 'block';
-            
+
             // Start line swaying
             swayLine();
-            
-            // Create bubbles and sparkles
+
+            // Create bubbles
             setInterval(createBubble, 800);
         }
 
         // Line swaying animation
         function swayLine() {
             if (gameState !== 'fishing') return;
-            
+
             linePosition += swayDirection * 1.5;
-            
+
             if (linePosition >= 85 || linePosition <= 15) {
                 swayDirection *= -1;
             }
-            
+
             fishingLine.style.left = linePosition + '%';
             fishingLine.style.height = '45%';
-            
+
             requestAnimationFrame(swayLine);
         }
 
@@ -153,7 +156,7 @@
             bubble.style.width = bubble.style.height = Math.random() * 15 + 8 + 'px';
             bubble.style.animationDelay = Math.random() * 2 + 's';
             document.getElementById('bubbles').appendChild(bubble);
-            
+
             setTimeout(() => {
                 if (bubble.parentNode) {
                     bubble.parentNode.removeChild(bubble);
@@ -170,7 +173,7 @@
             sparkle.style.top = Math.random() * 100 + '%';
             sparkle.style.animationDelay = Math.random() * 2 + 's';
             sparkles.appendChild(sparkle);
-            
+
             setTimeout(() => {
                 if (sparkle.parentNode) {
                     sparkle.parentNode.removeChild(sparkle);
@@ -178,13 +181,13 @@
             }, 2000);
         }
 
-        // Touch/Click handler
+        // Touch/Click handler for fishing
         document.addEventListener('touchstart', handleTouch, { passive: false });
         document.addEventListener('click', handleTouch);
 
         function handleTouch(e) {
             e.preventDefault();
-            
+
             if (gameState === 'fishing') {
                 checkCatch();
             } else if (gameState === 'pulling') {
@@ -195,19 +198,18 @@
         // Check if line is over treasure
         function checkCatch() {
             const lineRect = fishingLine.getBoundingClientRect();
-            const treasureRect = treasure.getBoundingClientRect();
             const zoneRect = catchZone.getBoundingClientRect();
-            
+
             const lineX = lineRect.left + lineRect.width / 2;
             const zoneX = zoneRect.left + zoneRect.width / 2;
-            
+
             if (Math.abs(lineX - zoneX) < 50) {
                 // Successful catch!
                 gameState = 'pulling';
                 instruction.textContent = 'Keep tapping to pull up the treasure!';
                 catchZone.style.display = 'none';
                 pullProgressBar.style.display = 'block';
-                
+
                 // Animate treasure moving to hook
                 treasure.style.bottom = '45%';
                 treasure.style.left = (linePosition - 2) + '%';
@@ -224,20 +226,20 @@
         function pullTreasure() {
             pullProgress += 6;
             progressBar.style.width = pullProgress + '%';
-            
+
             // Move treasure higher as progress increases
             const newBottom = 30 + (pullProgress / 100) * 25;
             treasure.style.bottom = newBottom + '%';
-            
+
             if (pullProgress >= 100) {
                 gameState = 'locked';
                 instruction.style.display = 'none';
                 pullProgressBar.style.display = 'none';
                 lockScreen.style.display = 'flex';
-                
+
                 // Hide treasure from main screen
                 treasure.style.display = 'none';
-                
+
                 // Start creating sparkles
                 setInterval(createSparkle, 300);
             }
@@ -246,13 +248,13 @@
         // Check lock answer
         function checkAnswer() {
             const answer = lockInput.value.trim().toLowerCase();
-            
+
             if (answer === 'bubbuu' || answer === 'bubbu') {
                 wrongAnswer.style.display = 'none';
-                
+
                 // Animate chest opening
                 chestLid.classList.add('unlock-animation');
-                
+
                 setTimeout(() => {
                     openTreasure();
                 }, 1000);
@@ -260,7 +262,7 @@
                 lockAttempts++;
                 lockInput.value = '';
                 wrongAnswer.style.display = 'block';
-                
+
                 if (lockAttempts === 1) {
                     lockQuestion.textContent = "Hmm, try his nickname...";
                     wrongAnswer.textContent = "Think of someone special... 💕";
@@ -271,7 +273,7 @@
                     lockQuestion.textContent = "Just type: Bubbuu";
                     wrongAnswer.textContent = "Here's the answer! Type it exactly...";
                 }
-                
+
                 // Shake animation for wrong answer
                 document.querySelector('.chest-container').style.animation = 'none';
                 setTimeout(() => {
@@ -280,19 +282,15 @@
             }
         }
 
-        // Handle enter key in input
-        lockInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                checkAnswer();
-            }
-        });
+        // ✅ Only button triggers checkAnswer now
+        unlockBtn.addEventListener('click', checkAnswer);
 
         // Open treasure and show victory
         function openTreasure() {
             gameState = 'victory';
             lockScreen.style.display = 'none';
             victoryScreen.style.display = 'flex';
-            
+
             // Create animated message with better spacing
             const messages = [
                 "Happyy 22yrs",
@@ -301,7 +299,7 @@
                 "1 more month",
                 "to goooo! 💕"
             ];
-            
+
             messages.forEach((msg, index) => {
                 setTimeout(() => {
                     const messageEl = document.createElement('div');
@@ -311,7 +309,7 @@
                     messageContainer.appendChild(messageEl);
                 }, index * 500);
             });
-            
+
             // Create floating hearts
             createFloatingHearts();
         }
@@ -319,7 +317,7 @@
         // Create floating hearts animation
         function createFloatingHearts() {
             const heartsContainer = document.getElementById('floatingHearts');
-            
+
             setInterval(() => {
                 const heart = document.createElement('div');
                 heart.className = 'heart';
@@ -327,7 +325,7 @@
                 heart.style.left = Math.random() * 100 + '%';
                 heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
                 heartsContainer.appendChild(heart);
-                
+
                 // Remove heart after animation
                 setTimeout(() => {
                     if (heart.parentNode) {
@@ -340,19 +338,19 @@
         // Add shake animation to CSS
         const style = document.createElement('style');
         style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                25% { transform: translateX(-8px); }
-                75% { transform: translateX(8px); }
-            }
-        `;
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+    `;
         document.head.appendChild(style);
 
         // Start game
         initGame();
 
         // Prevent zoom on mobile
-        document.addEventListener('touchmove', function(e) {
+        document.addEventListener('touchmove', function (e) {
             if (e.scale !== 1) {
                 e.preventDefault();
             }
@@ -360,7 +358,7 @@
 
         // Prevent double-tap zoom
         let lastTouchEnd = 0;
-        document.addEventListener('touchend', function(e) {
+        document.addEventListener('touchend', function (e) {
             const now = (new Date()).getTime();
             if (now - lastTouchEnd <= 300) {
                 e.preventDefault();
@@ -369,14 +367,14 @@
         });
 
         // Prevent context menu
-        document.addEventListener('contextmenu', function(e) {
+        document.addEventListener('contextmenu', function (e) {
             e.preventDefault();
         });
 
         // Focus input when lock screen appears
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.target.id === 'lockScreen' && 
+        const observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if (mutation.target.id === 'lockScreen' &&
                     mutation.target.style.display === 'flex') {
                     setTimeout(() => {
                         lockInput.focus();
@@ -389,6 +387,8 @@
             attributes: true,
             attributeFilter: ['style']
         });
+
     </script>
 </body>
+
 </html>
