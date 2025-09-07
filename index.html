@@ -186,12 +186,12 @@
         document.addEventListener('click', handleTouch);
 
         function handleTouch(e) {
-            // If the touch/click is on the lock screen controls, let them work normally
-            if (e.target.closest('#lockScreen') || e.target.closest('#unlockBtn') || e.target.closest('#lockInput')) {
+            // If the touch/click is inside lock screen UI, let it work
+            if (e.target.closest('#lockScreen')) {
                 return;
             }
 
-            // Prevent default only for game touches
+            // Prevent default only inside the game area
             e.preventDefault();
 
             if (gameState === 'fishing') {
@@ -288,9 +288,14 @@
             }
         }
 
-        // ✅ Unlock button listeners (works on mobile too)
-        unlockBtn.addEventListener('click', checkAnswer);
+        // ✅ Unlock button listeners — handle both desktop + mobile properly
         unlockBtn.addEventListener('touchend', (ev) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+            checkAnswer();
+        });
+        unlockBtn.addEventListener('click', (ev) => {
+            ev.preventDefault();
             ev.stopPropagation();
             checkAnswer();
         });
@@ -398,6 +403,7 @@
             attributeFilter: ['style']
         });
     </script>
+
 
 </body>
 
